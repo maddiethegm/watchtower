@@ -27,17 +27,20 @@ rem
 @echo off
 :MONITOR
 setlocal enableextensions
-if "%~3"=="" (
+if "%~5"=="" (
     echo Usage: %~nx0 PROCESS_NAME APP_LOCATION WATCH_DIRECTORY
     exit /b 1
 )
 set "PROCESS_NAME=%~1"
 set "APP_LOCATION=%~2"
 set "WATCH_DIRECTORY=%~3"
+set "MIN=%~4"
+set "MAX=%~5"
+
 set /a count=0
 for /f %%i in ('dir /b /a-d "%WATCH_DIRECTORY%" ^| find /c /v ""') do set /a count=%%i
-if %count% LSS 1 goto KILLAPP
-if %count% GEQ 10 goto STARTAPP
+if %count% LSS %MIN% goto KILLAPP
+if %count% GEQ %MAX% goto STARTAPP
 
 :KILLAPP
 tasklist /FI "IMAGENAME eq %PROCESS_NAME%" 2>NUL | find /I "%PROCESS_NAME%" >NUL
